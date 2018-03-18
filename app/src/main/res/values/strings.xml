@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">ActivitatGeolocalitzacioIComunicacions</string>
+    <string name="title_activity_maps">MapGeolocalitzacio</string>
+    <string name="title_activity_segona_activitat">SegonaActivitat</string>
+    <string name="title_activity_afegir_marker">AfegirMarker</string>
+</resources>
