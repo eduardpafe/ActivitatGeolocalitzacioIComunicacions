@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -36,8 +37,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.Bidi;
 import java.util.List;
+import java.util.Locale;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, AdapterView.OnItemSelectedListener, View.OnClickListener{
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, AdapterView.OnItemSelectedListener, View.OnClickListener {
     private GoogleMap mMap;
 
     private ToggleButton btnAnimacio;
@@ -109,18 +111,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    @NonNull
+    @org.jetbrains.annotations.Contract(pure = true)
     private GoogleMap.OnMapLongClickListener alFerUnClicLlarg() {
         return new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
                 Log.i(latLng.toString(), "User long click");
-               // Intent intent = new Intent(getApplicationContext(), AfegirMarker.class);
-                //startActivityForResult(intent, 0);
-               // Marker point = new Marker("Olot", "Nom del marker", 12, 0,0);
+                String coordenades = latLng.toString();
 
-                mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(0,0))
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                Intent intent = new Intent(getApplicationContext(), AfegirMarker.class);
+                Bundle dades = new Bundle();
+                dades.putString("LatLng", coordenades);
+                intent.putExtras(dades);
+                startActivity(intent);
 
             }
         };
@@ -203,26 +207,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String localitzacio = et.getText().toString();
 
         Geocoder gc = new Geocoder(this);
-        List<Address> list = gc.getFromLocationName(localitzacio, 0);
+        List<Address> list = gc.getFromLocationName(localitzacio, 1);
         Address address = list.get(0);
         //String ciutat = address.getLocality();
-
-        //Toast.makeText(this, localitzacio, Toast.LENGTH_LONG).show();
 
         double lat = address.getLatitude();
         double lng = address.getLongitude();
 
-        if (localitzacio == ""){
+        if (localitzacio == "") {
             LatLng ll = new LatLng(0, 0);
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, 2000), 2000, null);
 
-        } else{
+        } else {
             anarLocalitzacioZoom(lat, lng, 12);
         }
 
     }
 
-    private void anarLocalitzacioZoom(double lat, double lng, float zoom){
+    private void anarLocalitzacioZoom(double lat, double lng, float zoom) {
         LatLng ll = new LatLng(lat, lng);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, 15), 2000, null);
     }
